@@ -5,80 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Compression Tool</title>
     <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
             text-align: center;
-            margin: 20px;
+            padding: 20px;
         }
-        input, button {
-            margin: 10px;
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
         }
-        img {
+
+        /* Container Styling */
+        .container {
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: auto;
+        }
+
+        /* Input & Button Styling */
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input, select, button {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Image Container */
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .image-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 280px;
+            transition: transform 0.3s;
+        }
+
+        .image-card:hover {
+            transform: scale(1.05);
+        }
+
+        .image-card img {
             max-width: 100%;
+            border-radius: 5px;
             margin-top: 10px;
+        }
+
+        .download-btn {
+            display: block;
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h2>Image Compression Tool</h2>
-    <input type="file" id="upload" accept="image/*">
-    <br>
-    <label>Quality (0.1 - 1):</label>
-    <input type="number" id="quality" step="0.1" min="0.1" max="1" value="0.7">
-    <br>
-    <button onclick="compressImage()">Compress Image</button>
-    <br>
-    <h3>Original Image</h3>
-    <img id="original" alt="Original Image">
-    <h3>Compressed Image</h3>
-    <img id="compressed" alt="Compressed Image">
-    <br>
-    <a id="download" style="display: none;" download="compressed.jpg">
-        <button>Download Compressed Image</button>
-    </a>
+    <div class="container">
+        <h2>Image Compression Tool</h2>
+        
+        <div class="input-group">
+            <input type="file" id="upload" accept="image/*" multiple>
+        </div>
+
+        <div class="input-group">
+            <label>Quality (0.1 - 1):</label>
+            <input type="number" id="quality" step="0.1" min="0.1" max="1" value="0.7">
+        </div>
+
+        <div class="input-group">
+            <label>Output Format:</label>
+            <select id="format">
+                <option value="image/jpeg">JPG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+            </select>
+        </div>
+
+        <button onclick="compressImages()">Compress Images</button>
+    </div>
+
+    <div class="image-container" id="imageContainer"></div>
 
     <script>
-        function compressImage() {
+        function compressImages() {
             const fileInput = document.getElementById('upload');
             const quality = parseFloat(document.getElementById('quality').value);
+            const format = document.getElementById('format').value;
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = '';
+
             if (!fileInput.files.length) {
-                alert("Please select an image file.");
+                alert("Please select image files.");
                 return;
             }
-            
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = function (event) {
-                const img = new Image();
-                img.src = event.target.result;
+
+            Array.from(fileInput.files).forEach(file => {
+                const reader = new FileReader();
                 
-                img.onload = function () {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Set canvas size to match image
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    
-                    // Draw image on canvas
-                    ctx.drawImage(img, 0, 0, img.width, img.height);
-                    
-                    // Compress image
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-                    
-                    // Display images
-                    document.getElementById('original').src = img.src;
-                    document.getElementById('compressed').src = compressedDataUrl;
-                    
-                    // Enable download button
-                    const downloadLink = document.getElementById('download');
-                    downloadLink.href = compressedDataUrl;
-                    downloadLink.style.display = 'block';
+                reader.onload = function (event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                        const compressedDataUrl = canvas.toDataURL(format, quality);
+
+                        // Display images
+                        const div = document.createElement('div');
+                        div.classList.add('image-card');
+
+                        div.innerHTML = `
+                            <h4>Original</h4>
+                            <img src="${img.src}" alt="Original Image">
+                            <h4>Compressed (${format.split('/')[1].toUpperCase()})</h4>
+                            <img src="${compressedDataUrl}" alt="Compressed Image">
+                            <a href="${compressedDataUrl}" download="compressed.${format.split('/')[1]}" class="download-btn">Download</a>
+                        `;
+
+                        imageContainer.appendChild(div);
+                    };
                 };
-            };
-            
-            reader.readAsDataURL(file);
+
+                reader.readAsDataURL(file);
+            });
         }
     </script>
 </body>
