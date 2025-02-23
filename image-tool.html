@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compress your images online with our fully responsive image compression tool. Optimize your images for web use with adjustable compression levels.">
+    <meta name="keywords" content="image compression, optimize images, image optimizer, online image compressor">
+    <meta name="author" content="Your Name">
+    <title>Online Image Compression Tool</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR_ADSENSE_AD_UNIT_ID" crossorigin="anonymous"></script>
+    <!-- Custom Styles -->
+    <style>
+        /* Custom gradient for the header */
+        .gradient-header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+        }
+        /* Custom gradient for the button */
+        .gradient-button {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            transition: background 0.3s ease;
+        }
+        .gradient-button:hover {
+            background: linear-gradient(135deg, #fad0c4, #ff9a9e);
+        }
+        /* Custom gradient for the footer */
+        .gradient-footer {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-purple-50 to-blue-50">
+    <!-- Header -->
+    <header class="gradient-header text-white py-8 shadow-lg">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl font-bold">🎨 Image Compressor</h1>
+            <p class="mt-2 text-lg">Optimize your images with vibrant colors!</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Top Ad Placement -->
+        <section id="ad-top" class="mb-8">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="YOUR_ADSENSE_AD_UNIT_ID"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </section>
+
+        <!-- Compression Tool -->
+        <section class="bg-white p-8 rounded-lg shadow-md">
+            <div class="max-w-2xl mx-auto">
+                <!-- File Input -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image-input">
+                        📁 Upload Image
+                    </label>
+                    <input type="file" id="image-input" accept="image/*" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                </div>
+
+                <!-- Compression Level -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="compression-level">
+                        🎚️ Compression Level: <span id="compression-value">0.5</span>
+                    </label>
+                    <input type="range" id="compression-level" min="0" max="1" step="0.1" value="0.5" class="w-full range range-purple">
+                </div>
+
+                <!-- Compress Button -->
+                <button id="compress-btn" class="w-full gradient-button text-white py-3 px-6 rounded-lg font-bold text-lg hover:shadow-lg transition duration-300">
+                    🚀 Compress Image
+                </button>
+
+                <!-- Image Display -->
+                <div id="image-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-2">🖼️ Original Image</h3>
+                        <img id="original-image" src="#" alt="Original Image" class="w-full h-auto rounded-lg shadow-md border-2 border-purple-200">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-2">✨ Compressed Image</h3>
+                        <img id="compressed-image" src="#" alt="Compressed Image" class="w-full h-auto rounded-lg shadow-md border-2 border-blue-200">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Placement -->
+        <section id="ad-bottom" class="mt-8">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="YOUR_ADSENSE_AD_UNIT_ID"
+                 data-ad-slot="0987654321"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-footer text-white py-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2023 Online Image Compression Tool. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Update compression level value
+        const compressionLevel = document.getElementById('compression-level');
+        const compressionValue = document.getElementById('compression-value');
+        compressionLevel.addEventListener('input', () => {
+            compressionValue.textContent = compressionLevel.value;
+        });
+
+        // Image compression functionality
+        document.getElementById('compress-btn').addEventListener('click', function() {
+            const fileInput = document.getElementById('image-input');
+            const compressionLevel = parseFloat(document.getElementById('compression-level').value);
+            const originalImage = document.getElementById('original-image');
+            const compressedImage = document.getElementById('compressed-image');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    originalImage.src = e.target.result;
+                    originalImage.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = originalImage.width;
+                        canvas.height = originalImage.height;
+                        ctx.drawImage(originalImage, 0, 0);
+
+                        canvas.toBlob(function(blob) {
+                            const url = URL.createObjectURL(blob);
+                            compressedImage.src = url;
+                        }, 'image/jpeg', compressionLevel);
+                    };
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+    </script>
+</body>
+</html>
