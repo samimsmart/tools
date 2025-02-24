@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generate AI-powered images instantly. Download in multiple formats and regenerate with ease.">
+    <meta name="keywords" content="AI image generator, AI art, image generation, AI tools">
+    <meta name="author" content="Your Name">
+    <title>AI Image Generator</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #image-generator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #input-section {
+            margin-bottom: 20px;
+        }
+
+        #prompt {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        #generate-btn, #regenerate-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #generate-btn:hover, #regenerate-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #output-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #image-container {
+            margin-bottom: 20px;
+        }
+
+        #generated-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #download-options {
+            margin-bottom: 20px;
+        }
+
+        #download-options button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        #download-options button:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Image Generator</h1>
+        <p>Create stunning images with AI. Download in multiple formats or regenerate with a single click.</p>
+    </header>
+
+    <main>
+        <section id="image-generator">
+            <div id="input-section">
+                <textarea id="prompt" placeholder="Enter a prompt for the image (e.g., 'A futuristic cityscape')"></textarea>
+                <button id="generate-btn">Generate Image</button>
+            </div>
+
+            <div id="output-section">
+                <div id="image-container">
+                    <img id="generated-image" src="" alt="Generated Image">
+                </div>
+                <div id="download-options">
+                    <button id="download-png">Download as PNG</button>
+                    <button id="download-jpg">Download as JPG</button>
+                    <button id="download-webp">Download as WebP</button>
+                </div>
+                <button id="regenerate-btn">Regenerate Image</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 AI Image Generator. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // JavaScript Functionality
+        const API_KEY = 'YOUR_AI_API_KEY'; // Replace with your AI API key
+        const API_URL = 'https://api.your-ai-service.com/generate'; // Replace with your AI API endpoint
+
+        const promptInput = document.getElementById('prompt');
+        const generateBtn = document.getElementById('generate-btn');
+        const regenerateBtn = document.getElementById('regenerate-btn');
+        const imageContainer = document.getElementById('generated-image');
+        const downloadPngBtn = document.getElementById('download-png');
+        const downloadJpgBtn = document.getElementById('download-jpg');
+        const downloadWebpBtn = document.getElementById('download-webp');
+
+        let currentImageUrl = '';
+
+        // Generate image from AI API
+        async function generateImage() {
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert('Please enter a prompt.');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+                if (data.imageUrl) {
+                    currentImageUrl = data.imageUrl;
+                    imageContainer.src = currentImageUrl;
+                } else {
+                    throw new Error('Failed to generate image.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate image. Please try again.');
+            }
+        }
+
+        // Regenerate image
+        regenerateBtn.addEventListener('click', generateImage);
+
+        // Download image in different formats
+        function downloadImage(format) {
+            if (!currentImageUrl) {
+                alert('No image to download.');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.href = currentImageUrl;
+            link.download = `ai-generated-image.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        downloadPngBtn.addEventListener('click', () => downloadImage('png'));
+        downloadJpgBtn.addEventListener('click', () => downloadImage('jpg'));
+        downloadWebpBtn.addEventListener('click', () => downloadImage('webp'));
+
+        // Generate image on button click
+        generateBtn.addEventListener('click', generateImage);
+    </script>
+</body>
+</html>
